@@ -56,19 +56,25 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <profiles>
         <profile>
             <id>prod</id>
             <properties>
-                <env>/prod</env>
+                <env>prod</env>
             </properties>
         </profile>
         <profile>
             <id>local</id>
             <properties>
-                <env>/local</env>
+                <env>local</env>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -83,6 +89,11 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources/${env}</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>

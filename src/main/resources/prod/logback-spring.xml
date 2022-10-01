@@ -16,7 +16,7 @@
     <!-- log file path -->
     <property name="LOG_PATH" value="/Users/jwlee/workspace/project/model/admin/log"/>
     <!-- log file name -->
-    <property name="LOG_FILE_NAME" value="admin"/>
+    <property name="LOG_FILE_NAME" value="admin2"/>
     <!-- pattern -->
     <property name="LOG_PATTERN" value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>
 

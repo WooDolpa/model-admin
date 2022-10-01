@@ -1,9 +1,0 @@
-
-# ?? ?? ??
-log:
-  config:
-    path: /Users/jwlee/workspace/project/model/admin
-    filename: admin
-logging:
-  level:
-    root: debug
