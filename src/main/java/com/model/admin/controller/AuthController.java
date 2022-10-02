@@ -59,33 +59,33 @@ public class AuthController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(dto.getId().trim(),dto.getPassword().trim());
         Authentication authentication = authenticationManager.authenticate(token);
 
-//        // 계정 정보 조회
-//        Optional<AdminModel> adminModelOptional = authService.findAdmin(dto.getId());
-//
-//        // 계정이 존재하면 토큰 생성
-//        if(adminModelOptional.isPresent()){
-//
-//            AdminModel adminModel = adminModelOptional.get();
-//
-//            //Token 생성
-//            String admin_token = null;
-//
-//            Random random = new Random();
-//            StringBuffer sbf = new StringBuffer();
-//
-//            for(int i=0; i<8; i++){
-//                if(random.nextBoolean()){
-//                    sbf.append((char)(int)(random.nextInt(26)+97));
-//                }else{
-//                    sbf.append(random.nextInt(10));
-//                }
-//            }
-//
-//            admin_token = "ADMIN_"+adminModel.getAdminNo()+"_"+sbf.toString();
-//
-//            resultMap.put("token", admin_token);
-//            resultMap.put("name", adminModel.getName());
-//        }
+        // 계정 정보 조회
+        Optional<AdminModel> adminModelOptional = authService.findAdmin(dto.getId());
+
+        // 계정이 존재하면 토큰 생성
+        if(adminModelOptional.isPresent()){
+
+            AdminModel adminModel = adminModelOptional.get();
+
+            //Token 생성
+            String admin_token = null;
+
+            Random random = new Random();
+            StringBuffer sbf = new StringBuffer();
+
+            for(int i=0; i<8; i++){
+                if(random.nextBoolean()){
+                    sbf.append((char)(int)(random.nextInt(26)+97));
+                }else{
+                    sbf.append(random.nextInt(10));
+                }
+            }
+
+            admin_token = "ADMIN_"+adminModel.getAdminNo()+"_"+sbf.toString();
+
+            resultMap.put("token", admin_token);
+            resultMap.put("name", adminModel.getName());
+        }
 
         return new ResponseEntity(ApiResponseDto.makeResponse(resultMap), HttpStatus.OK);
 

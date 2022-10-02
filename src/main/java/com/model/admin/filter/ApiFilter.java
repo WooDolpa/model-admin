@@ -75,7 +75,7 @@ public class ApiFilter implements Filter {
      */
     private void checkValidateToken(boolean isNoNeedAccessTokenApi, String authorization, CustomHttpServletRequest customHttpServletRequest) {
 
-        if(!StringUtils.hasLength(authorization) && authorization.length() > 0){
+        if(StringUtils.hasLength(authorization) && authorization.length() > 0){
             customHttpServletRequest.putHeader(ApiConstants.AUTHORIZATION, authorization);
             customHttpServletRequest.putHeader(ApiConstants.TOKEN_STATUS, TokenStatus.Valid.name());
         }else{
