@@ -1,0 +1,23 @@
+.button-bottom-position{
+    margin-bottom: 5px;
+}
+.button-last{
+    margin-right: 2%;
+}
+
+.button-area{
+    margin-left: 5px;
+}
+
+.table-area{
+    margin-top: 10px;
+}
+
+.formImgSize {
+    width: 300px;
+    height: 200px;
+}
+
+.form-error{
+    color: red;
+}

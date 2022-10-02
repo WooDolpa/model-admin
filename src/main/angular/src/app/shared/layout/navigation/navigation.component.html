@@ -1,0 +1,71 @@
+<aside id="left-panel">
+
+  <!-- User info -->
+  <sa-login-info></sa-login-info>
+  <!-- end user info -->
+
+  <nav *ngIf="textBoolean">
+    <!-- NOTE: Notice the gaps after each icon usage <i></i>..
+    Please note that these links work a bit different than
+    traditional href="" links. See documentation for details.
+    -->
+
+    <ul saSmartMenu>
+
+      <li>
+        <a>
+          <span class="menu-item-parent">{{'메인 관리' | i18n}}</span>
+        </a>
+        <ul>
+          <li routerLinkActive="active">
+            <a routerLink="/main/company">{{'회사정보' | i18n}}</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/main/navigation">{{'네비게이션' | i18n}}</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/main/slider">{{'슬라이드' | i18n}}</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/main/contents">{{'내용' | i18n}}</a>
+          </li>
+        </ul>
+      </li>
+
+      <li *ngIf="sub_title_one != ''">
+        <a>
+          <span class="menu-item-parent">{{sub_title_one | i18n}}</span>
+        </a>
+        <ul>
+          <li routerLinkActive="active">
+            <a routerLink="/sub1/management">{{sub_title_one +' 관리' | i18n}}</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/sub1/group">{{sub_title_one + ' 그룹 관리' | i18n}}</a>
+          </li>
+        </ul>
+      </li>
+
+      <li *ngIf="sub_title_two != ''">
+        <a>
+          <span class="menu-item-parent">{{sub_title_two | i18n}}</span>
+        </a>
+        <ul>
+          <li routerLinkActive="active">
+            <a routerLink="/sub2/management">{{sub_title_two + ' 관리' | i18n}}</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/sub2/group">{{sub_title_two + ' 그룹 관리' | i18n}}</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/sub2/text">{{'텍스트 관리' | i18n}}</a>
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </nav>
+
+  <sa-minify-menu></sa-minify-menu>
+
+</aside>

@@ -1,0 +1,219 @@
+<div id="content">
+  <sa-widgets-grid>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="text-align-right">
+          <button class="btn btn-primary pull-right button-last button-bottom-position" (click)="openRegForm()"><i class="fa fa-save"></i> 등록</button>
+          <select class="form-control pull-right" style="width: 100px; margin-right: 5px; height: 32.56px;" name="searchType" [(ngModel)]="groupId" (ngModelChange)="changeSearchType()">
+            <option value="">전체</option>
+            <option *ngFor="let groupRow of groupRows" [value]="groupRow.id">{{groupRow.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngFor="let row of rows">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" *ngFor="let item of row">
+          <a (click)="openUpdateForm(item)">
+            <img class="img-fluid img-thumbnail gallery" [src]="item.img" style="width: 100%; height: 200px;">
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row form-margin" *ngIf="regBtnStatus">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>등록</h2>
+          </header>
+
+          <div class="widget-body">
+            <form class="form-horizontal" novalidate="novalidate" #regForm="ngForm" (ngSubmit)="regFormSubmit()">
+
+              <fieldset>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 이미지 : </strong></label>
+                  <div class="col-md-3">
+                    <input class="form-control" type="file" placeholder="" autocomplete="off" name="reg_img" (change)="fileUpload($event)" [(ngModel)]="model.img">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 그룹 : </strong></label>
+                  <div class="col-md-8">
+
+                    <select class="form-control" style="width: 100px;" name="reg_group" [(ngModel)]="model.group" #reg_group="ngModel" required >
+                      <option *ngFor="let groupRow of groupRows;" [value]="groupRow.id" >{{groupRow.name}}</option>
+                    </select>
+
+                    <div *ngIf="reg_group.invalid && (reg_group.dirty || reg_group.touched)">
+                      <div *ngIf="reg_group.errors.required" class="form-error">
+                        그룹을 선택해주세요.
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 제목 : </strong></label>
+                  <div class="col-md-3">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required  name="reg_title" [(ngModel)]="model.title" #reg_title="ngModel">
+                    <div *ngIf="reg_title.invalid && (reg_title.dirty || reg_title.touched)">
+                      <div *ngIf="reg_title.errors.required" class="form-error">
+                        제목을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 설명 : </strong></label>
+                  <div class="col-md-3">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required name="reg_description" [(ngModel)]="model.description" #reg_description="ngModel">
+                    <div *ngIf="reg_description.invalid && (reg_description.dirty || reg_description.touched)">
+                      <div *ngIf="reg_description.errors.required" class="form-error">
+                        설명을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 연결 주소 : </strong></label>
+                  <div class="col-md-5">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" name="reg_url" [(ngModel)]="model.url" >
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <div class="row">
+                  <div class="col-md-12">
+                    <button class="btn btn-danger" type="button" (click)="cancelRegForm()">취소</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="regForm.invalid">등록</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </article>
+    </div>
+
+    <div class="row form-margin" *ngIf="updBtnStatus">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>수정</h2>
+          </header>
+
+          <div class="widget-body">
+            <form class="form-horizontal" novalidate="novalidate" #updateForm="ngForm" (ngSubmit)="updateFormSubmit()">
+
+              <fieldset>
+                <div class="form-group">
+                  <label class="control-label col-md-1"><strong> 이미지 : </strong></label>
+                  <div class="col-md-4">
+                    <a class="d-block mb-4 h-100">
+                      <img class="img-fluid img-thumbnail gallery" [src]="imgUrl" alt="">
+                    </a>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 그룹 : </strong></label>
+                  <div class="col-md-8">
+
+                    <select class="form-control" style="width: 100px;" name="upd_group" [(ngModel)]="model.group" #upd_group="ngModel" required >
+                      <option *ngFor="let groupRow of groupRows;" [value]="groupRow.id" >{{groupRow.name}}</option>
+                    </select>
+
+                    <div *ngIf="upd_group.invalid && (upd_group.dirty || upd_group.touched)">
+                      <div *ngIf="upd_group.errors.required" class="form-error">
+                        그룹을 선택해주세요.
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 제목 : </strong></label>
+                  <div class="col-md-3">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required  name="update_title" [(ngModel)]="model.title" #update_title="ngModel">
+                    <div *ngIf="update_title.invalid && (update_title.dirty || update_title.touched)">
+                      <div *ngIf="update_title.errors.required" class="form-error">
+                        제목을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 설명 : </strong></label>
+                  <div class="col-md-3">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required name="update_description" [(ngModel)]="model.description" #update_description="ngModel">
+                    <div *ngIf="update_description.invalid && (update_description.dirty || update_description.touched)">
+                      <div *ngIf="update_description.errors.required" class="form-error">
+                        설명을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 이미지 : </strong></label>
+                  <div class="col-md-3">
+                    <input class="form-control" type="file" placeholder="" autocomplete="off" name="reg_img" (change)="fileUpload($event)" [(ngModel)]="model.img">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 순번 : </strong></label>
+                  <div class="col-md-3">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required name="update_rank" [(ngModel)]="model.rank" #update_rank="ngModel">
+                    <div *ngIf="update_rank.invalid && (update_rank.dirty || update_rank.touched)">
+                      <div *ngIf="update_rank.errors.required" class="form-error">
+                        순번을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 연결 주소 : </strong></label>
+                  <div class="col-md-5">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" name="update_url" [(ngModel)]="model.url">
+                  </div>
+                </div>
+
+              </fieldset>
+
+              <div class="form-actions">
+                <div class="row">
+                  <div class="col-md-12">
+                    <button class="btn btn-danger" type="button" (click)="delete()">삭제</button>
+                    <button class="btn btn-success" type="button" (click)="cancelUpdateForm()">취소</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="updateForm.invalid">수정</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </article>
+    </div>
+
+
+  </sa-widgets-grid>
+</div>

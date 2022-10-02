@@ -1,0 +1,281 @@
+<div id="content">
+  <sa-widgets-grid>
+
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>검색 결과</h2>
+          </header>
+
+          <div class="widget-body">
+
+            <div class="row searchInfo-area">
+              <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <form class="form-inline" role="form">
+
+                  <div class="row">
+                    <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+                      <div class="form-group">
+                        <select class="form-control" style="width: 100px;" name="searchType" [(ngModel)]="group" (ngModelChange)="changeSearchGroup()">
+                          <option value="">전체</option>
+                          <option *ngFor="let groupRow of groupRows;" [value]="groupRow.id" >{{groupRow.name}}</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <select class="form-control" style="width: 100px;" name="searchType" [(ngModel)]="type" (ngModelChange)="changeSearchType()">
+                          <option value="">순번(상위)</option>
+                          <option value="1">순번(하위)</option>
+                          <option value="2">등록일</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <input class="form-control" type="text" placeholder="수상명을 입력해주세요." name="keyword" autocomplete="off" [(ngModel)]="keyword" >
+                        <button class="btn btn-large btn-info" type="submit" (click)="searchSubmit()">
+                          <i class="fa fa-search"></i> 검색
+                        </button>
+                      </div>
+                    </div>
+
+                    <div *ngIf="searchResult">
+                      <button class="btn btn-primary pull-right button-last button-bottom-position" type="button" (click)="regBtnEvent()" ><i class="fa fa-save"></i> 등록</button>
+                      <button class="btn btn-danger pull-right button-area" (click)="deleteItem()" type="button"> 삭제</button>
+                      <select class="pull-right form-control button-area" style="width: 70px;" name="pageSize" [(ngModel)]="controls.pageSize" (ngModelChange)="updatePageSize($event)">
+                        <option>10</option>
+                        <option>20</option>
+                        <option>30</option>
+                        <option>50</option>
+                      </select>
+                    </div>
+
+                    <div *ngIf="!searchResult">
+                      <button class="btn btn-primary pull-right button-last button-bottom-position" (click)="regBtnEvent()" ><i class="fa fa-save"></i> 등록</button>
+                    </div>
+
+                  </div>
+                </form>
+              </article>
+            </div>
+
+            <div class="row table-area" *ngIf="searchResult">
+              <article class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                <ngx-datatable
+                        #table
+                        class="table-striped"
+                        [rows]="rows"
+                        [loadingIndicator]="loadingIndicator"
+                        [columnMode]="'force'"
+                        [headerHeight]="40"
+                        [footerHeight]="45"
+                        [rowHeight]="'auto'"
+                        [externalPaging]="true"
+                        [count]="count"
+                        [offset]="offset"
+                        [limit]="controls.pageSize"
+                        (page)="onPage($event)"
+                        [selectionType]="'cell'"
+                        (select)="onSelect($event)"
+                        [selected]="selected"
+
+                        [cssClasses]= "{
+                                    sortAscending: 'fa fa-caret-up',
+                                    sortDescending: 'fa fa-caret-down',
+                                    pagerLeftArrow: 'fa  fa-angle-left',
+                                    pagerRightArrow: 'fa fa-angle-right',
+                                    pagerPrevious: 'fa fa-angle-double-left',
+                                    pagerNext: 'fa fa-angle-double-right'
+                                  }"
+                        [reorderable]="reorderable">
+
+                  <ngx-datatable-column [sortable]="false"  name="선택" [maxWidth]="50" cellClass="text-align-center">
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-isSelected="isSelected">
+                      <input type="checkbox"name="awardNo" [checked]="isSelected"/>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="그룹명" prop="awardTypeName" [maxWidth]="80"></ngx-datatable-column>
+                  <ngx-datatable-column name="순번" prop="rank" [maxWidth]="50"></ngx-datatable-column>
+                  <ngx-datatable-column name="내용" prop="awardName" [width]="500"></ngx-datatable-column>
+                  <ngx-datatable-column name="연결 주소" prop="url"></ngx-datatable-column>
+                </ngx-datatable>
+              </article>
+            </div>
+
+            <div class="row table-area" *ngIf="!searchResult">
+              <hr>
+              <alert type="warning">
+                <h4 class="alert-heading text-align-center">선택하신 조건의 검색 결과가 없습니다.</h4>
+              </alert>
+              <hr>
+            </div>
+
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="row" *ngIf="regBtnStatus">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>등록</h2>
+          </header>
+
+          <div class="widget-body">
+            <form class="form-horizontal" novalidate="novalidate" #regForm="ngForm" (ngSubmit)="regFormSubmit(regForm)">
+              <fieldset>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 그룹 : </strong></label>
+                  <div class="col-md-8">
+
+                    <select class="form-control" style="width: 100px;" name="reg_group" [(ngModel)]="model.group" #reg_group="ngModel" required >
+                      <option *ngFor="let groupRow of groupRows;" [value]="groupRow.id" >{{groupRow.name}}</option>
+                    </select>
+
+                    <div *ngIf="reg_group.invalid && (reg_group.dirty || reg_group.touched)">
+                      <div *ngIf="reg_group.errors.required" class="form-error">
+                        그룹을 선택해주세요.
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 내용 : </strong></label>
+                  <div class="col-md-8">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required name="reg_content"
+                           [(ngModel)]="model.awardName" #reg_content="ngModel">
+                    <div *ngIf="reg_content.invalid && (reg_content.dirty || reg_content.touched)">
+                      <div *ngIf="reg_content.errors.required" class="form-error">
+                        내용을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 링크 : </strong></label>
+                  <div class="col-md-8">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" name="reg_url" [(ngModel)]="model.url">
+                  </div>
+                </div>
+
+              </fieldset>
+
+              <div class="form-actions">
+                <div class="row">
+                  <div class="col-md-12">
+                    <button class="btn btn-danger" type="button" (click)="cancelRegForm()">취소</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="regForm.invalid">등록</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </article>
+    </div>
+
+    <div class="row" *ngIf="updBtnStatus">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>수정</h2>
+          </header>
+
+          <div class="widget-body">
+            <form class="form-horizontal" novalidate="novalidate" #updForm="ngForm" (ngSubmit)="updFormSubmit()">
+              <fieldset>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 그룹 : </strong></label>
+                  <div class="col-md-8">
+
+                    <select class="form-control" style="width: 100px;" name="upd_group" [(ngModel)]="model.group" #upd_group="ngModel" required >
+                      <option *ngFor="let groupRow of groupRows;" [value]="groupRow.id" >{{groupRow.name}}</option>
+                    </select>
+
+                    <div *ngIf="upd_group.invalid && (upd_group.dirty || upd_group.touched)">
+                      <div *ngIf="upd_group.errors.required" class="form-error">
+                        그룹을 선택해주세요.
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 내용 : </strong></label>
+                  <div class="col-md-8">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required name="upd_content"
+                           [(ngModel)]="model.awardName" #upd_content="ngModel">
+                    <div *ngIf="upd_content.invalid && (upd_content.dirty || upd_content.touched)">
+                      <div *ngIf="upd_content.errors.required" class="form-error">
+                        내용을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 링크 : </strong></label>
+                  <div class="col-md-8">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" name="update_url" [(ngModel)]="model.url">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 순위 : </strong></label>
+                  <div class="col-md-2">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required name="update_rank"
+                           [(ngModel)]="model.rank" #update_rank="ngModel">
+                    <div *ngIf="update_rank.invalid && (update_rank.dirty || update_rank.touched)">
+                      <div *ngIf="update_rank.errors.required" class="form-error">
+                        순위를 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 활성화 여부 : </strong></label>
+                  <div class="col-md-4">
+                    <label class="radio radio-inline no-margin">
+                      <input type="radio" name="upd_isActive" class="radiobox" value="1" [checked]="model.dataStatus == upd_active.value" #upd_active
+                             (click)="model.dataStatus = upd_active.value">
+                      <span>활성화</span>
+                    </label>
+                    <label class="radio radio-inline no-margin">
+                      <input type="radio" name="upd_isActive" class="radiobox" value="2" [checked]="model.dataStatus == upd_inactive.value" #upd_inactive
+                             (click)="model.dataStatus = upd_inactive.value">
+                      <span>비 활성화</span>
+                    </label>
+                  </div>
+                </div>
+
+              </fieldset>
+
+              <div class="form-actions">
+                <div class="row">
+                  <div class="col-md-12">
+                    <button class="btn btn-danger" type="button" (click)="cancelUpdForm()">취소</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="updForm.invalid">수정</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </article>
+    </div>
+
+  </sa-widgets-grid>
+</div>

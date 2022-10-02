@@ -1,0 +1,281 @@
+<script src="slider.component.ts"></script>
+<div id="content">
+  <sa-widgets-grid>
+    <div class="row">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>슬라이드 이미지 관리</h2>
+          </header>
+
+          <div>
+            <div class="widget-body">
+
+              <div class="row searchInfo-area">
+                <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <form class="form-inline" role="form">
+                    <div class="row">
+                      <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+
+                        <div class="form-group">
+                          <select class="form-control input-sm"  name="isActive" [(ngModel)]="isActive" (ngModelChange)="searchTypeChange()">
+                            <option value="">활성화 여부</option>
+                            <option value="1">활성화</option>
+                            <option value="2">비활성화</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <input class="form-control" value="" style="width: 200px;" name="keyword" placeholder="제목 또는 내용을 입력해주세요." [(ngModel)]="keyword">
+                          <button class="btn btn-default search_btn" type="submit" (click)="searchSubmit()">
+                            <i class="fa fa-search"></i> 검색
+                          </button>
+                        </div>
+
+                      </div>
+                      <div>
+                        <button class="btn btn-primary pull-right button-last button-bottom-position" type="button" (click)="openRegForm()"><i class="fa fa-save"></i> 등록</button>
+                      </div>
+                    </div>
+                  </form>
+                </article>
+              </div>
+
+              <div class="row table-area">
+                <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <ngx-datatable
+                          #table
+                          class="table-striped"
+                          [rows]="rows"
+                          [loadingIndicator]="loadingIndicator"
+                          [columnMode]="'force'"
+                          [headerHeight]="40"
+                          [footerHeight]="45"
+                          [rowHeight]="'auto'"
+                          [externalPaging]="true"
+                          [count]="count"
+                          [offset]="offset"
+                          [limit]="controls.pageSize"
+                          (page)="onPage($event)"
+                          [selectionType]="'cell'"
+                          (select)="onSelect($event)"
+                          [selected]="selected"
+
+                          [cssClasses]= "{
+                                              sortAscending: 'fa fa-caret-up',
+                                              sortDescending: 'fa fa-caret-down',
+                                              pagerLeftArrow: 'fa  fa-angle-left',
+                                              pagerRightArrow: 'fa fa-angle-right',
+                                              pagerPrevious: 'fa fa-angle-double-left',
+                                              pagerNext: 'fa fa-angle-double-right'
+                                            }"
+                          [reorderable]="reorderable">
+
+                    <ngx-datatable-column [sortable]="false"  name="선택" [maxWidth]="50" cellClass="text-align-center">
+                      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-isSelected="isSelected">
+                        <input type="checkbox"name="navigation_seq" [checked]="isSelected"/>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="순번" prop="sort" [maxWidth]="50"></ngx-datatable-column>
+                    <ngx-datatable-column name="제목" prop="title" ></ngx-datatable-column>
+                    <ngx-datatable-column name="내용" prop="content" ></ngx-datatable-column>
+                    <ngx-datatable-column name="이미지" prop="imgUrl">
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <ng-container *ngIf="value != null && value != ''; then exist else noExist"></ng-container>
+                        <ng-template #exist>
+                          <a class="btn btn-default" (click)="openImgModal(row.imgUrl)" ><i class="fa fa-image"></i> 이미지 </a>
+                        </ng-template>
+                        <ng-template #noExist>
+                          없음
+                        </ng-template>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="상태" prop="dataStatus" >
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <ng-container *ngIf="value == '1'; then exist else noExist"></ng-container>
+                        <ng-template #exist>활성화</ng-template>
+                        <ng-template #noExist>비활성화</ng-template>
+                      </ng-template>
+                    </ngx-datatable-column>
+                  </ngx-datatable>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="row" *ngIf="regBtnStatus">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>슬라이드 등록</h2>
+          </header>
+
+          <div class="widget-body">
+            <form class="form-horizontal" novalidate="novalidate" #regForm="ngForm" (ngSubmit)="regFormSubmit(regForm)">
+              <fieldset>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 제목 : </strong></label>
+                  <div class="col-md-4">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required  #reg_title="ngModel" [(ngModel)]="model.title" name="reg_title">
+                    <div *ngIf="reg_title.invalid && (reg_title.dirty || reg_title.touched)">
+                      <div *ngIf="reg_title.errors.required" class="form-error">
+                        제목을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 내용 : </strong></label>
+                  <div class="col-md-4">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required #reg_content="ngModel" name="reg_content" [(ngModel)]="model.content">
+                    <div *ngIf="reg_content.invalid && (reg_content.dirty || reg_content.touched)">
+                      <div *ngIf="reg_content.errors.required" class="form-error">
+                        내용을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 이미지 : </strong></label>
+                  <div class="col-md-3">
+                    <input type="file" class="btn btn-default" name="reg_sliderImg" (change)="fileUpload($event)" [(ngModel)]="model.img" >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 활성화 여부 : </strong></label>
+                  <div class="col-md-4">
+                    <label class="radio radio-inline no-margin">
+                      <input type="radio" name="reg_isActive" class="radiobox" value="1" [checked]="model.dataStatus == reg_active.value" #reg_active
+                             (click)="model.dataStatus = reg_active.value">
+                      <span>활성화</span>
+                    </label>
+                    <label class="radio radio-inline no-margin">
+                      <input type="radio" name="reg_isActive" class="radiobox" value="2" [checked]="model.dataStatus == reg_inactive.value" #reg_inactive
+                             (click)="model.dataStatus = reg_inactive.value">
+                      <span>비 활성화</span>
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <div class="row">
+                  <div class="col-md-12">
+                    <button class="btn btn-danger" type="button" (click)="cancelRegForm()">취소</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="regForm.invalid">등록</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </article>
+    </div>
+
+    <div class="row" *ngIf="updBtnStatus">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>슬라이드 수정</h2>
+          </header>
+
+          <div class="widget-body">
+            <form class="form-horizontal" novalidate="novalidate" #updateForm="ngForm" (ngSubmit)="updateFormSubmit(updateForm)">
+
+              <fieldset>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 제목 : </strong></label>
+                  <div class="col-md-4">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required  #update_title="ngModel" [(ngModel)]="model.title" name="update_title">
+                    <div *ngIf="update_title.invalid && (update_title.dirty || update_title.touched)">
+                      <div *ngIf="update_title.errors.required" class="form-error">
+                        제목을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 내용 : </strong></label>
+                  <div class="col-md-4">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required #update_content="ngModel" name="update_content" [(ngModel)]="model.content">
+                    <div *ngIf="update_content.invalid && (update_content.dirty || update_content.touched)">
+                      <div *ngIf="update_content.errors.required" class="form-error">
+                        내용을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 순번 : </strong></label>
+                  <div class="col-md-4">
+                    <input class="form-control" type="text" placeholder="" autocomplete="off" required #update_sort="ngModel" name="update_sort" [(ngModel)]="model.sort">
+                    <div *ngIf="update_sort.invalid && (update_sort.dirty || update_sort.touched)">
+                      <div *ngIf="update_sort.errors.required" class="form-error">
+                        순번을 입력해주세요.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 등록 이미지 : </strong></label>
+                  <div class="col-md-2">
+                    <img [src]="imgUrl" class="formImgSize">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 변경 이미지 (선택) : </strong></label>
+                  <div class="col-md-2">
+                    <input type="file" class="btn btn-default" name="update_sliderImg" (change)="fileUpload($event)" [(ngModel)]="model.img">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2"><strong> 활성화 여부 : </strong></label>
+                  <div class="col-md-4">
+                    <label class="radio radio-inline no-margin">
+                      <input type="radio" name="reg_isActive" class="radiobox" value="1" [checked]="model.dataStatus == update_active.value" #update_active
+                             (click)="model.dataStatus = update_active.value">
+                      <span>활성화</span>
+                    </label>
+                    <label class="radio radio-inline no-margin">
+                      <input type="radio" name="reg_isActive" class="radiobox" value="2" [checked]="model.dataStatus == update_inactive.value" #update_inactive
+                             (click)="model.dataStatus = update_inactive.value">
+                      <span>비 활성화</span>
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <div class="row">
+                  <div class="col-md-12">
+                    <button class="btn btn-danger" type="button" (click)="deleteSlider()">삭제</button>
+                    <button class="btn btn-info" type="button" (click)="cancelUpdForm()">취소</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="updateForm.invalid">수정</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </article>
+    </div>
+
+  </sa-widgets-grid>
+</div>
+
+<ng-template #imgModal>
+  <div class="modal-body" style="text-align: center;">
+    <h1><i class="fa fa-smile-o text-muted"></i>&nbsp;&nbsp; 이미지 </h1>
+    <hr class="simple">
+    <img src="{{imgUrl}}" style="max-width: 100%; height: auto;" class="text-align-center">
+  </div>
+</ng-template>

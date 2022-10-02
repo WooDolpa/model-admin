@@ -33,3 +33,5 @@ build/
 .vscode/
 # 로그파일
 log
+
+src/main/angular/node_modules

@@ -1,0 +1,62 @@
+<div id="content">
+  <div class="row">
+    <article class=" col-xs-offset-2 col-xs-8 col-sm-offset-2 col-sm-8 col-md-8 col-lg-8">
+      <div sa-widget>
+        <header>
+          <h2>회원 정보 수정</h2>
+        </header>
+        <div>
+          <form novalidate="novalidate" [saBootstrapValidator]="validatorOptions">
+            <div class="widget-body">
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <div class="form-group">
+                    <label>ID<sup class="txt-color-red">*</sup></label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" disabled name="loginId" [(ngModel)]="model.id">
+                      <span class="input-group-addon"><i class="fa fa-user-secret"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <div class="form-group">
+                    <label>이름<sup class="txt-color-red">*</sup></label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" name="name" [(ngModel)]="model.name">
+                      <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <div class="form-group">
+                    <label>이메일<sup class="txt-color-red">*</sup></label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" name="email" [(ngModel)]="model.email">
+                      <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <a class="btn btn-default pull-left" routerLink="/account/password">
+                      비밀번호 변경
+                    </a>
+                      <a class="btn btn-info pull-right" (click)="changeUserInfo()">
+                        저장하기
+                      </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>

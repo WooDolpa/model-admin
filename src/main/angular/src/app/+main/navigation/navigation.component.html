@@ -1,0 +1,154 @@
+<div id="content">
+  <sa-widgets-grid>
+    <div class="row">
+
+      <article class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+        <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+          <header>
+            <h2>네비게이션</h2>
+          </header>
+
+          <div>
+            <div class="widget-body">
+
+              <div class="row searchInfo-area">
+                <article class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                  <form class="form-inline" role="form">
+                    <div class="row">
+                      <div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
+
+                        <div class="form-group">
+                          <select class="form-control input-sm"  name="isActive" [(ngModel)]="dataStatus" (ngModelChange)="searchSubmit()">
+                            <option value="">활성화 여부</option>
+                            <option value="1">활성화</option>
+                            <option value="0">비활성화</option>
+                          </select>
+                        </div>
+
+<!--                        <div class="form-group">-->
+<!--                          <button class="btn btn-default search_btn" type="button" (click)="searchSubmit()">-->
+<!--                            <i class="fa fa-search"></i> 검색-->
+<!--                          </button>-->
+<!--                        </div>-->
+
+                      </div>
+                      <div class="col-sm-4 col-md-4 col-sm-offset-4 col-md-offset-4">
+                        <!--<button class="btn btn-primary pull-right button-area" (click)="openRegForm()"><i class="fa fa-save"></i> 등록</button>
+                        <button class="btn btn-danger pull-right button-area" (click)="delete()"> 삭제</button>-->
+                      </div>
+                    </div>
+                  </form>
+                </article>
+              </div>
+
+              <div class="row table-area">
+                <article class="col-sm-12 col-md-12">
+                  <ngx-datatable
+                          #table
+                          class="table-striped"
+                          [rows]="rows"
+                          [loadingIndicator]="loadingIndicator"
+                          [columnMode]="'force'"
+                          [headerHeight]="40"
+                          [footerHeight]="45"
+                          [rowHeight]="'auto'"
+                          [externalPaging]="true"
+                          [count]="count"
+                          [offset]="offset"
+                          [limit]="controls.pageSize"
+                          (page)="onPage($event)"
+                          [selectionType]="'cell'"
+                          (select)="onSelect($event)"
+                          [selected]="selected"
+
+                          [cssClasses]= "{
+                            sortAscending: 'fa fa-caret-up',
+                            sortDescending: 'fa fa-caret-down',
+                            pagerLeftArrow: 'fa  fa-angle-left',
+                            pagerRightArrow: 'fa fa-angle-right',
+                            pagerPrevious: 'fa fa-angle-double-left',
+                            pagerNext: 'fa fa-angle-double-right'
+                          }"
+                          [reorderable]="reorderable">
+
+                    <ngx-datatable-column [sortable]="false"  name="선택" [maxWidth]="50" cellClass="text-align-center">
+                      <ng-template ngx-datatable-cell-template let-value="value" let-row="row" let-isSelected="isSelected">
+                        <input type="checkbox"name="navNo" [checked]="isSelected"/>
+                      </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column name="명칭" prop="title" ></ngx-datatable-column>
+                    <ngx-datatable-column name="상태" prop="dataStatus" >
+                      <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                        <ng-container *ngIf="value == '1'; then exist else noExist"></ng-container>
+                        <ng-template #exist>활성화</ng-template>
+                        <ng-template #noExist>비활성화</ng-template>
+                      </ng-template>
+                    </ngx-datatable-column>
+                  </ngx-datatable>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="row" *ngIf="updBtnStatus">
+      <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div sa-widget [editbutton]="false" [colorbutton]="false" [sortable]="false" [deletebutton]="false" color="blueDark">
+
+              <header>
+                  <h2>네비게이션 수정</h2>
+              </header>
+
+              <div class="widget-body">
+                  <form class="form-horizontal" novalidate="novalidate" #updateForm="ngForm" (ngSubmit)="updFormSubmit(updateForm)">
+
+                      <fieldset>
+                          <div class="form-group">
+                              <label class="control-label col-md-2"><strong> 명칭 : </strong></label>
+                              <div class="col-md-4">
+                                  <input class="form-control" type="text" placeholder="" autocomplete="off" name="title"
+                                      #title="ngModel" [(ngModel)]="model.title" required >
+                                  <div *ngIf="title.invalid && (title.dirty || title.touched)">
+                                      <div *ngIf="title.errors.required" class="form-error">
+                                          명칭을 입력해주세요.
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="control-label col-md-2"><strong> 활성화 여부 : </strong></label>
+                              <div class="col-md-4">
+                                  <label class="radio radio-inline no-margin">
+                                      <input type="radio" name="dataStatus" class="radiobox" value="1" [checked]="model.dataStatus === Active.value" #Active
+                                              (click)="model.dataStatus = Active.value">
+                                      <span>활성화</span>
+                                  </label>
+                                  <label class="radio radio-inline no-margin">
+                                      <input type="radio" name="dataStatus" class="radiobox" value="2" [checked]="model.dataStatus === InActive.value" #InActive
+                                              (click)="model.dataStatus = InActive.value">
+                                      <span>비 활성화</span>
+                                  </label>
+                              </div>
+                          </div>
+                      </fieldset>
+
+                      <div class="form-actions">
+                          <div class="row">
+                              <div class="col-md-12">
+                                  <button class="btn btn-danger" type="button" (click)="cancelUpdForm()">취소</button>
+                                  <button class="btn btn-info" type="submit" [disabled]="updateForm.invalid">수정</button>
+                              </div>
+                          </div>
+                      </div>
+
+                  </form>
+              </div>
+          </div>
+      </article>
+    </div>
+
+  </sa-widgets-grid>
+</div>

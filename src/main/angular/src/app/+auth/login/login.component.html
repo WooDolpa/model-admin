@@ -1,0 +1,50 @@
+<header id="header" class="animated fadeInDown">
+  <div id="logo-group">
+    <span id="logo"> <img src="assets/img/logo.png" alt="IrevoLogo" style="height: 40px;"> </span>
+  </div>
+</header>
+
+
+<div id="main" role="main" style="background: none;">
+  <!-- MAIN CONTENT -->
+  <div id="content" class="container">
+    <div class="row" style="margin-top:10%">
+      <div class="col-sm-12 col-md-12">
+        <div class="col-sm-5 col-md-5 col-sm-offset-3 col-md-offset-3">
+          <div class="well no-padding">
+            <form class="smart-form client-form">
+              <header>
+                Admin 로그인
+              </header>
+              <fieldset>
+                <section>
+                  <label class="label">아이디</label>
+                  <label class="input"> <i class="icon-append fa fa-user"></i>
+                    <input autofocus type="text" name="userId" autocomplete="off" [(ngModel)]="userId">
+                    <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i>아이디를 입력해주세요.</b>
+                  </label>
+                </section>
+                <section>
+                  <label class="label">비밀번호</label>
+                  <label class="input"> <i class="icon-append fa fa-lock"></i>
+                    <input type="password" name="password" [(ngModel)]="password">
+                    <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i>비밀번호를 입력해주세요.</b>
+                  </label>
+                  <div class="note">
+                    <a (click)="tempPassword()">임시 비밀번호 받기</a>
+                  </div>
+                </section>
+              </fieldset>
+              <footer>
+                <button class="btn btn-primary" (click)="login()">
+                  Sign in
+                </button>
+              </footer>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
