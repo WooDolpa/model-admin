@@ -157,15 +157,15 @@ public class MainController {
                                         @RequestParam(value = "slider_img", required = false) MultipartFile imgFile){
 
         // 유효성 검사 체크
-        if(StringUtils.hasLength(title)){
+        if(!StringUtils.hasLength(title)){
             throw new ManagedException(ManagedExceptionCode.InvalidSliderTitle, ApiConstants.INVALID_SLIDER_TITLE);
         }
 
-        if (StringUtils.hasLength(content)){
+        if (!StringUtils.hasLength(content)){
             throw new ManagedException(ManagedExceptionCode.InvalidSliderContent, ApiConstants.INVALID_SLIDER_CONTENT);
         }
 
-        if(StringUtils.hasLength(dataStatus)){
+        if(!StringUtils.hasLength(dataStatus)){
             throw new ManagedException(ManagedExceptionCode.InvalidSliderDataStatus, ApiConstants.INVALID_SLIDER_DATASTATUS);
         }
 
@@ -208,11 +208,11 @@ public class MainController {
             throw new ManagedException(ManagedExceptionCode.InvalidSliderNo, ApiConstants.INVALID_SLIDER_NO);
         }
 
-        if(StringUtils.hasLength(title)){
+        if(!StringUtils.hasLength(title)){
             throw new ManagedException(ManagedExceptionCode.InvalidSliderTitle, ApiConstants.INVALID_SLIDER_TITLE);
         }
 
-        if(StringUtils.hasLength(content)){
+        if(!StringUtils.hasLength(content)){
             throw new ManagedException(ManagedExceptionCode.InvalidSliderContent, ApiConstants.INVALID_SLIDER_CONTENT);
         }
 
@@ -220,7 +220,7 @@ public class MainController {
             throw new ManagedException(ManagedExceptionCode.InvalidRank, ApiConstants.INVALID_RANK);
         }
 
-        if(StringUtils.hasLength(dataStatus)){
+        if(!StringUtils.hasLength(dataStatus)){
             throw new ManagedException(ManagedExceptionCode.InvalidSliderDataStatus, ApiConstants.INVALID_SLIDER_DATASTATUS);
         }
 

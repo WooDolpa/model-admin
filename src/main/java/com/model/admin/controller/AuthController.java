@@ -1,8 +1,12 @@
 package com.model.admin.controller;
 
+import com.model.admin.constatns.ApiConstants;
 import com.model.admin.dto.ApiResponseDto;
 import com.model.admin.dto.AuthDto;
+import com.model.admin.exception.ManagedException;
+import com.model.admin.exception.ManagedExceptionCode;
 import com.model.admin.service.AuthService;
+import com.model.admin.service.MailService;
 import com.model.admin.service.ValidatorService;
 import com.model.common.model.AdminModel;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -40,6 +42,7 @@ public class AuthController {
     private final ValidatorService validatorService;
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
+    private final MailService mailService;
 
     @PostMapping(path = "/login")
     public ResponseEntity login(HttpServletRequest request,
@@ -89,6 +92,38 @@ public class AuthController {
 
         return new ResponseEntity(ApiResponseDto.makeResponse(resultMap), HttpStatus.OK);
 
+    }
+
+    /**
+     * 로그아웃
+     * @param request
+     * @return
+     */
+    @DeleteMapping(path = "/logout")
+    public ResponseEntity logout(HttpServletRequest request){
+
+        String token = null;
+        token = request.getHeader(ApiConstants.AUTHORIZATION);
+
+        if(StringUtils.isEmpty(token)){
+            throw new ManagedException(ManagedExceptionCode.ExpiredToken,ApiConstants.EXPIRED_TOKEN);
+        }
+
+        return new ResponseEntity(ApiResponseDto.makeSuccessResponse(),HttpStatus.OK);
+    }
+
+    /**
+     * 임시 비밀번호 이메일 전송
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(path = "/temp/password")
+    public ResponseEntity tempPassword(HttpServletRequest request){
+
+        mailService.sendMail();
+
+        return new ResponseEntity(ApiResponseDto.makeSuccessResponse(), HttpStatus.OK);
     }
 
 }
